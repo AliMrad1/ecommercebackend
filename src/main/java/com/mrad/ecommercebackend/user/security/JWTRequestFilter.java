@@ -1,7 +1,7 @@
 package com.mrad.ecommercebackend.user.security;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.mrad.ecommercebackend.user.UserRepository;
+import com.mrad.ecommercebackend.user.UserDao;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +24,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JWTService service;
     @Autowired
-    private UserRepository repository;
+    private UserDao repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

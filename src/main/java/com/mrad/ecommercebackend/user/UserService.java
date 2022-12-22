@@ -10,10 +10,9 @@ import com.mrad.ecommercebackend.user.model.UserModel;
 import com.mrad.ecommercebackend.user.model.VerificationToken;
 import com.mrad.ecommercebackend.user.security.JWTService;
 import com.mrad.ecommercebackend.user.security.PasswordEncoder;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,14 +24,14 @@ import java.util.function.Predicate;
 public class UserService {
 
     private final PasswordEncoder bCryptPasswordEncoder;
-    private final UserRepository userRepository;
+    private final UserDao userRepository;
     private final JWTService jwtService;
     private final EmailService emailService;
-
     private VerificationTokenRepository verificationTokenRepository;
 
     public UserModel register(RegistrationBody body) throws UserExistException {
 
+        var encryptPassword = bCryptPasswordEncoder.encryptPassword(body.password());
 
         UserModel user = new UserModel();
 
@@ -44,7 +43,6 @@ public class UserService {
         user.setLast_name(body.last_name());
 
         // encrypt password with BCrypt
-        var encryptPassword = bCryptPasswordEncoder.encryptPassword(body.password());
         user.setPassword(encryptPassword);
 
         Predicate<String> userExistByUsername = username -> userRepository.findByUsername(username).isPresent();
@@ -59,7 +57,7 @@ public class UserService {
         var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
         emailService.send(verificationToken.getUser().getEmail(), EmailHtmlCustom.buildEmail(body.first_name(),link));
 
-        userRepository.save(user);
+        userRepository.insertUser(user);
         verificationTokenRepository.save(verificationToken);
 
         return user;
@@ -115,7 +113,7 @@ public class UserService {
         UserModel user = verificationToken.getUser();
         if(!user.isEmailVerified()){
           user.setEmailVerified(true);
-          userRepository.save(user);
+          userRepository.insertUser(user);
           verificationTokenRepository.deleteByUser(user);
           return true;
         }
