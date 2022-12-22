@@ -58,4 +58,8 @@ public class UserModel {
         this.last_name = last_name;
     }
 
+    public boolean isEmailVerified(){
+      return emailVerified;
+    }
+
 }

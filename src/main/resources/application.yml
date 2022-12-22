@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce
     username: postgres
-    password: 12345678
+    password: password
 
   jpa:
     hibernate:
@@ -31,19 +31,19 @@ jwt:
   expiredInSeconds: 604800
 
 mail:
-    host: smtp.office365.com
-    port: 587
-    username: pr.alimrad@outlook.com
-    password: 01792385@Oo
+  host: smtp.office365.com
+  port: 587
+  username: pr.alimrad@outlook.com
+  password: 01792385@Oo
 
-    properties:
-        mail:
-            smtp:
-                ssl:
-                  trust: "*"
-                auth: true
-                starttls:
-                   enable: true
-                connectiontimeout: 5000
-                timeout: 3000
-                writetimeout: 5000
+  properties:
+    mail:
+      smtp:
+        ssl:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000

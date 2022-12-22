@@ -3,16 +3,20 @@ package com.mrad.ecommercebackend.user;
 import com.mrad.ecommercebackend.email.EmailHtmlCustom;
 import com.mrad.ecommercebackend.email.EmailService;
 import com.mrad.ecommercebackend.user.exception.UserExistException;
+import com.mrad.ecommercebackend.user.exception.UserNotVerifiedException;
 import com.mrad.ecommercebackend.user.model.LoginBody;
 import com.mrad.ecommercebackend.user.model.RegistrationBody;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import com.mrad.ecommercebackend.user.model.VerificationToken;
 import com.mrad.ecommercebackend.user.security.JWTService;
 import com.mrad.ecommercebackend.user.security.PasswordEncoder;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -20,10 +24,10 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class UserService {
 
-    private PasswordEncoder bCryptPasswordEncoder;
-    private UserRepository userRepository;
-    private JWTService jwtService;
-    private EmailService emailService;
+    private final PasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final JWTService jwtService;
+    private final EmailService emailService;
 
     private VerificationTokenRepository verificationTokenRepository;
 
@@ -52,21 +56,40 @@ public class UserService {
 
         VerificationToken verificationToken = createVerificationToken(user);
 
-        String link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
+        var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
         emailService.send(verificationToken.getUser().getEmail(), EmailHtmlCustom.buildEmail(body.first_name(),link));
 
+        userRepository.save(user);
         verificationTokenRepository.save(verificationToken);
 
-        userRepository.save(user);
         return user;
     }
 
-    public String loginUser(LoginBody body){
+    public String loginUser(LoginBody body) throws UserNotVerifiedException {
         Optional<UserModel> username = userRepository.findByUsername(body.username());
         if(username.isPresent()){
             UserModel user = username.get();
             if(bCryptPasswordEncoder.verifyPassword(body.password(), user.getPassword())){
+              if(user.isEmailVerified()){
                 return jwtService.generateJWT(user);
+              }
+              else{
+                List<VerificationToken> tokens = user.getVerificationTokens();
+                var resend = tokens.size() == 0 ||
+                  tokens.get(0).getCreatedTimeStamp()
+                    .before(new Timestamp(System.currentTimeMillis() - (60 * 60 *1000)));
+                if(resend){
+                  VerificationToken verificationToken = createVerificationToken(user);
+                  verificationTokenRepository.save(verificationToken);
+                  var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
+                  emailService.send(
+                    verificationToken.getUser().getEmail(),
+                    EmailHtmlCustom.buildEmail(body.username(),link)
+                  );
+
+                }
+                throw new UserNotVerifiedException(resend);
+              }
             }
         }
 
@@ -81,5 +104,23 @@ public class UserService {
         user.getVerificationTokens().add(verificationToken);
 
         return verificationToken;
+    }
+
+    @Transactional
+    public boolean verifyUser(String token){
+      Optional<VerificationToken> opToken =
+        verificationTokenRepository.findByToken(token);
+      if(opToken.isPresent()){
+        VerificationToken verificationToken = opToken.get();
+        UserModel user = verificationToken.getUser();
+        if(!user.isEmailVerified()){
+          user.setEmailVerified(true);
+          userRepository.save(user);
+          verificationTokenRepository.deleteByUser(user);
+          return true;
+        }
+      }
+
+      return false;
     }
 }

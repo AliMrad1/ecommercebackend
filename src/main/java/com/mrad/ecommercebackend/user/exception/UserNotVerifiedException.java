@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public class UserNotVerifiedException extends Exception {
 
     private boolean newEmailSend;
 
-
-
+    public boolean isNewEmailSend(){
+      return newEmailSend;
+    }
 }
