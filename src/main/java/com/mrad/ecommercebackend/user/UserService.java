@@ -12,9 +12,9 @@ import com.mrad.ecommercebackend.user.security.JWTService;
 import com.mrad.ecommercebackend.user.security.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -27,7 +27,7 @@ public class UserService {
     private final UserDao userRepository;
     private final JWTService jwtService;
     private final EmailService emailService;
-    private VerificationTokenRepository verificationTokenRepository;
+    private VerificationTokenDao verificationTokenRepository;
 
     public UserModel register(RegistrationBody body) throws UserExistException {
 
@@ -52,21 +52,31 @@ public class UserService {
             throw new UserExistException("user already exist");
         }
 
-        VerificationToken verificationToken = createVerificationToken(user);
-
-        var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
-        emailService.send(verificationToken.getUser().getEmail(), EmailHtmlCustom.buildEmail(body.first_name(),link));
 
         userRepository.insertUser(user);
-        verificationTokenRepository.save(verificationToken);
+        // read the user again to get the id from database
+
+        Optional<UserModel> user_with_auto_generated_email = userRepository.findByUsername(user.getUsername());
+
+        if(user_with_auto_generated_email.isPresent()){
+
+            UserModel temp = user_with_auto_generated_email.get();
+            VerificationToken verificationToken = createVerificationToken(temp);
+
+            var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
+//            emailService.send(verificationToken.getUser().getEmail(), EmailHtmlCustom.buildEmail(body.first_name(),link));
+
+
+            verificationTokenRepository.insertToken(verificationToken);
+        }
 
         return user;
     }
 
     public String loginUser(LoginBody body) throws UserNotVerifiedException {
-        Optional<UserModel> username = userRepository.findByUsername(body.username());
-        if(username.isPresent()){
-            UserModel user = username.get();
+        Optional<UserModel> findByUsername = userRepository.findByUsername(body.username());
+        if(findByUsername.isPresent()){
+            UserModel user = findByUsername.get();
             if(bCryptPasswordEncoder.verifyPassword(body.password(), user.getPassword())){
               if(user.isEmailVerified()){
                 return jwtService.generateJWT(user);
@@ -78,7 +88,7 @@ public class UserService {
                     .before(new Timestamp(System.currentTimeMillis() - (60 * 60 *1000)));
                 if(resend){
                   VerificationToken verificationToken = createVerificationToken(user);
-                  verificationTokenRepository.save(verificationToken);
+                  verificationTokenRepository.insertToken(verificationToken);
                   var link = "http://localhost:8080/auth/confirm?token=" + verificationToken.getToken();
                   emailService.send(
                     verificationToken.getUser().getEmail(),
@@ -99,21 +109,21 @@ public class UserService {
         verificationToken.setToken(jwtService.generateVerificationJWT(user));
         verificationToken.setCreatedTimeStamp(new Timestamp((System.currentTimeMillis())));
         verificationToken.setUser(user);
-        user.getVerificationTokens().add(verificationToken);
-
+        user.setVerificationTokens(Collections.singletonList(verificationToken));
         return verificationToken;
     }
 
-    @Transactional
     public boolean verifyUser(String token){
       Optional<VerificationToken> opToken =
         verificationTokenRepository.findByToken(token);
       if(opToken.isPresent()){
         VerificationToken verificationToken = opToken.get();
         UserModel user = verificationToken.getUser();
+
         if(!user.isEmailVerified()){
+            System.out.println("verified");
           user.setEmailVerified(true);
-          userRepository.insertUser(user);
+          userRepository.update_verifiedUser(user);
           verificationTokenRepository.deleteByUser(user);
           return true;
         }

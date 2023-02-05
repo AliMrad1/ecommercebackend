@@ -13,13 +13,13 @@ public class UserRowMapper implements RowMapper<UserModel> {
         return new UserModel(
                     resultSet.getLong("id"),
                     resultSet.getString("username"),
-                    resultSet.getString("password"),
                     resultSet.getString("email"),
                     resultSet.getString("first_name"),
                     resultSet.getString("last_name"),
+                    resultSet.getString("password"),
                     List.of(),
                     List.of(),
-                    resultSet.getBoolean("emailVerified")
-                );
+                    resultSet.getBoolean("email_verified")
+        );
     }
 }

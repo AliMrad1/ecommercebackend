@@ -18,8 +18,17 @@ public class VerificationToken {
 
     private Timestamp createdTimeStamp;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "user_id", nullable = false)
     private UserModel user;
 
+    @Override
+    public String toString() {
+        return "VerificationToken{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", createdTimeStamp=" + createdTimeStamp +
+                ", user=" + user +
+                '}';
+    }
 }

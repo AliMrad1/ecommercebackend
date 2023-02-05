@@ -10,11 +10,11 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository repository;
+//    @Autowired
+//    private OrderRepository repository;
 
     public List<Order> getAllOrdersByUser(UserModel user){
-        return repository.findByUser(user);
+        return null;
     }
 }
 

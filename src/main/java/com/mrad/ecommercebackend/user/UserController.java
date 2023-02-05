@@ -26,7 +26,7 @@ public class UserController {
         try {
             user = service.register(body);
         } catch (UserExistException e) {
-          System.out.println("Something wrong !!!!!!!!!!!");
+          System.out.println("Something wrong !!!!!!!!!!!"+e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.ok(user.toString());
@@ -53,10 +53,10 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("confirm")
+    @GetMapping("/confirm")
     public ResponseEntity<String> verifyEmail(@RequestParam String token){
       if (service.verifyUser(token)){
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Verified");
       }
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }

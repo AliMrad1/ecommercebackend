@@ -8,12 +8,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class PasswordEncoder {
 
-    @Value("${encryption.salt.rounds}")
+//    @Value("${encryption.salt.rounds}")
     private int saltRounds;
     private String salt;
 
-    @PostConstruct
+    public PasswordEncoder() {
+        saltRounds= 10;
+
+        postConstruct();
+    }
+
     public void postConstruct(){
+        System.out.println("fired!!");
         salt = BCrypt.gensalt(saltRounds);
     }
 

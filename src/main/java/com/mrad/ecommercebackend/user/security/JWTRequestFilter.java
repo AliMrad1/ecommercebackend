@@ -26,6 +26,11 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Autowired
     private UserDao repository;
 
+    public JWTRequestFilter(JWTService service, UserDao repository) {
+        this.service = service;
+        this.repository = repository;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

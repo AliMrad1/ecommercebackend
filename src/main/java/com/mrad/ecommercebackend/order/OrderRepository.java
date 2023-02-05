@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface OrderRepository extends ListCrudRepository<Order,Long> {
+//@Repository
+public interface OrderRepository  {
 
     List<Order> findByUser(UserModel user);
 }
