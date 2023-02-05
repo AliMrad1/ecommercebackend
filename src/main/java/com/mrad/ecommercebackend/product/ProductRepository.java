@@ -1,8 +1,8 @@
 package com.mrad.ecommercebackend.product;
 
-import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
-public interface ProductRepository extends ListCrudRepository<Product,Long> {
+public interface ProductRepository {
+
+    List<Product> getAllProducts();
 }

@@ -2,53 +2,40 @@ package com.mrad.ecommercebackend.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mrad.ecommercebackend.address.Address;
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 public class UserModel {
 
-    @Id
-    @SequenceGenerator(
-            name = "user_id_sequence",
-            sequenceName = "user_id_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_id_sequence"
-    )
     private Long id;
-    @Column(nullable = false,unique = true)
     private String username;
     @JsonIgnore
-    @Column(nullable = false,length = 1000)
     private String password;
-    @Column(nullable = false,unique = true)
     private String email;
-    @Column(nullable = false)
     private String first_name;
-
-    @Column(nullable = false)
     private String last_name;
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("id desc")
     private List<VerificationToken> verificationTokens = new ArrayList<>();
-
-    @Column(nullable = false)
     private Boolean  emailVerified = false;
+    public UserModel(long id, String username, String firstName, String lastName, String email, boolean emailVerified) {
+        this.id = id;
+        this.username = username;
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.email = email;
+        this.emailVerified = emailVerified;
+    }
 
-    public UserModel() {
+    public UserModel(){
+
     }
 
     public UserModel(String username, String email, String first_name, String last_name) {
@@ -58,4 +45,54 @@ public class UserModel {
         this.last_name = last_name;
     }
 
+    public UserModel(String username, String email, String first_name, String last_name,String password) {
+        this.username = username;
+        this.email = email;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.password= password;
+    }
+
+    public UserModel(Long id,String username, String email, String first_name, String last_name,String password,
+                     List<VerificationToken> verificationTokens,List<Address> addresses) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.password= password;
+        this.verificationTokens = verificationTokens;
+        this.addresses = addresses;
+    }
+
+    public UserModel(long id, String username, String email, String firstName, String lastName, String password, List<Address> of, List<VerificationToken> of1, boolean emailVerified) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.first_name = firstName;
+        this.last_name = lastName;
+        this.password = password;
+        this.addresses = of;
+        this.verificationTokens = of1;
+        this.emailVerified = emailVerified;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", addresses=" + addresses +
+                ", verificationTokens=" + verificationTokens +
+                ", emailVerified=" + emailVerified +
+                '}';
+    }
 }

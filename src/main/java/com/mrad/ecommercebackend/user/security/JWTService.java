@@ -38,7 +38,7 @@ public class JWTService {
 
     public String generateVerificationJWT(UserModel user){
         return JWT.create()
-        .withClaim(EMAIL_KEY, user.getUsername())
+        .withClaim(EMAIL_KEY, user.getEmail())
         .withExpiresAt(new Date(System.currentTimeMillis() + (1000L * expiredInSeconds)))
         .withIssuer(issuer)
         .sign(algorithm);

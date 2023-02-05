@@ -1,6 +1,7 @@
 package com.mrad.ecommercebackend.user;
 
 import com.mrad.ecommercebackend.user.exception.UserExistException;
+import com.mrad.ecommercebackend.user.exception.UserNotVerifiedException;
 import com.mrad.ecommercebackend.user.model.LoginBody;
 import com.mrad.ecommercebackend.user.model.LoginResponse;
 import com.mrad.ecommercebackend.user.model.RegistrationBody;
@@ -25,20 +26,39 @@ public class UserController {
         try {
             user = service.register(body);
         } catch (UserExistException e) {
+          System.out.println("Something wrong !!!!!!!!!!!"+e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        return ResponseEntity.ok("valid");
+        return ResponseEntity.ok(user.toString());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginBody body){
-        String jwt = service.loginUser(body);
-        if(jwt == null) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginBody body) {
+      String jwt = null;
+      try {
+        jwt = service.loginUser(body);
+      } catch (UserNotVerifiedException e) {
+        String s = "User Not Found";
+        if(e.isNewEmailSend()){
+          s+= ", Email RESENT";
+        }
+        LoginResponse response = new LoginResponse("",false,s);
+        return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+      }
+      if(jwt == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        LoginResponse response = new LoginResponse(jwt);
+        LoginResponse response = new LoginResponse(jwt,true,"No Failure");
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/confirm")
+    public ResponseEntity<String> verifyEmail(@RequestParam String token){
+      if (service.verifyUser(token)){
+        return ResponseEntity.ok("Verified");
+      }
+      return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @GetMapping("/me")
