@@ -23,6 +23,8 @@ public class UserModel {
     private String last_name;
     @JsonIgnore
     private List<Address> addresses = new ArrayList<>();
+
+    @JsonIgnore
     private List<VerificationToken> verificationTokens = new ArrayList<>();
     private Boolean  emailVerified = false;
     public UserModel(long id, String username, String firstName, String lastName, String email, boolean emailVerified) {

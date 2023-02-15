@@ -1,7 +1,7 @@
 package com.mrad.ecommercebackend.user.security;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.mrad.ecommercebackend.user.UserDao;
+import com.mrad.ecommercebackend.user.dao.UserDao;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

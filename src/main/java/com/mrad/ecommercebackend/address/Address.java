@@ -2,11 +2,13 @@ package com.mrad.ecommercebackend.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mrad.ecommercebackend.user.model.UserModel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Address {
 
     private Long id;

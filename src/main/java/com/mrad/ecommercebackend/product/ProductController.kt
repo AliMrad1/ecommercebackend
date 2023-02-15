@@ -1,21 +1,16 @@
-package com.mrad.ecommercebackend.product;
+package com.mrad.ecommercebackend.product
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/product")
-public class ProductController {
-
-    @Autowired
-    private ProductService service;
+class ProductController @Autowired constructor(private val service: ProductService) {
 
     @GetMapping("/all")
-    public List<Product> getAllProducts(){
-        return service.getAllProducts();
+    fun allProducts(): List<Product> {
+            return service.allProducts()
     }
 }

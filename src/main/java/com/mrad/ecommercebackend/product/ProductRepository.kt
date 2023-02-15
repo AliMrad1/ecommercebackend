@@ -1,8 +1,5 @@
-package com.mrad.ecommercebackend.product;
+package com.mrad.ecommercebackend.product
 
-import java.util.List;
-
-public interface ProductRepository {
-
-    List<Product> getAllProducts();
+interface ProductRepository {
+    fun allProducts():List<Product>
 }

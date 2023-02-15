@@ -1,19 +1,16 @@
-package com.mrad.ecommercebackend.user;
+package com.mrad.ecommercebackend.user.dao;
 
+import com.mrad.ecommercebackend.user.dao.VerificationTokenDao;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import com.mrad.ecommercebackend.user.model.VerificationToken;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class VerificationTokenDataAccessService implements VerificationTokenDao{
+public class VerificationTokenDataAccessService implements VerificationTokenDao {
 
     private final JdbcTemplate jdbcTemplate;
     public VerificationTokenDataAccessService(JdbcTemplate jdbcTemplate) {

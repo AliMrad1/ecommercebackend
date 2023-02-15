@@ -1,23 +1,21 @@
-package com.mrad.ecommercebackend.product;
+package com.mrad.ecommercebackend.product
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Repository
 
 @Repository
-public class ProductDataAccessService implements ProductRepository {
+class ProductDataAccessService
+    @Autowired constructor(private val jdbcTemplate: JdbcTemplate) : ProductRepository {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Override
-    public List<Product> getAllProducts() {
-        var sql = """
+    override fun allProducts(): List<Product> {
+        val sql = """
                 SELECT *
                 FROM
                 product
                 LIMIT 20;
-                """;
-        return jdbcTemplate.query(sql, new ProductRowMapper());
+                """.trimIndent()
+
+        return jdbcTemplate.query(sql, ProductRowMapper())
     }
 }
