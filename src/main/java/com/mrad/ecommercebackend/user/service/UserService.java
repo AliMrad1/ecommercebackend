@@ -1,7 +1,9 @@
-package com.mrad.ecommercebackend.user;
+package com.mrad.ecommercebackend.user.service;
 
 import com.mrad.ecommercebackend.email.EmailHtmlCustom;
 import com.mrad.ecommercebackend.email.EmailService;
+import com.mrad.ecommercebackend.user.dao.UserDao;
+import com.mrad.ecommercebackend.user.dao.VerificationTokenDao;
 import com.mrad.ecommercebackend.user.exception.UserExistException;
 import com.mrad.ecommercebackend.user.exception.UserNotVerifiedException;
 import com.mrad.ecommercebackend.user.model.LoginBody;

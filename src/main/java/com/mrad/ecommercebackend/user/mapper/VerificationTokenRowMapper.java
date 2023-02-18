@@ -1,4 +1,4 @@
-package com.mrad.ecommercebackend.user;
+package com.mrad.ecommercebackend.user.mapper;
 
 import com.mrad.ecommercebackend.user.model.UserModel;
 import com.mrad.ecommercebackend.user.model.VerificationToken;

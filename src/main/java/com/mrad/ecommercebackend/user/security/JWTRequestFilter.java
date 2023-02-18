@@ -1,7 +1,7 @@
 package com.mrad.ecommercebackend.user.security;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.mrad.ecommercebackend.user.UserDao;
+import com.mrad.ecommercebackend.user.dao.UserDao;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,7 +42,6 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             var token = tokenHeader.substring(7);
             try {
                 var username = service.getUsername(token);
-                System.out.println(username);
                 Optional<UserModel> userExist = repository.findByUsername(username);
                 if (userExist.isPresent()) {
                     var user = userExist.get();

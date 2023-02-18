@@ -1,12 +1,11 @@
 package com.mrad.ecommercebackend.product;
 
-import com.mrad.ecommercebackend.inventory.Inventory;
 import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ProductRowMapper implements RowMapper<Product> {
+class ProductRowMapper implements RowMapper<Product> {
+
     @Override
     public Product mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Product(

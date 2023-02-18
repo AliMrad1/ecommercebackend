@@ -1,9 +1,8 @@
-package com.mrad.ecommercebackend.user;
+package com.mrad.ecommercebackend.user.dao;
 
+import com.mrad.ecommercebackend.user.mapper.UserRowMapper;
 import com.mrad.ecommercebackend.user.model.UserModel;
-import com.mrad.ecommercebackend.user.model.VerificationToken;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;

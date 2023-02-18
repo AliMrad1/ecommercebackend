@@ -23,6 +23,8 @@ public class UserModel {
     private String last_name;
     @JsonIgnore
     private List<Address> addresses = new ArrayList<>();
+
+    @JsonIgnore
     private List<VerificationToken> verificationTokens = new ArrayList<>();
     private Boolean  emailVerified = false;
     public UserModel(long id, String username, String firstName, String lastName, String email, boolean emailVerified) {
@@ -75,6 +77,11 @@ public class UserModel {
         this.addresses = of;
         this.verificationTokens = of1;
         this.emailVerified = emailVerified;
+    }
+
+    public UserModel(Long id, String firstName, String lastName) {
+        this.first_name = firstName;
+        this.last_name = lastName;
     }
 
     public boolean isEmailVerified() {

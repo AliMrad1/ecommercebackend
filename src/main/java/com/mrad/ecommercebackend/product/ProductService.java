@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductService {
+class ProductService {
 
     @Autowired
     private ProductRepository repository;
-    public List<Product> getAllProducts(){
-        return repository.getAllProducts();
+    public List<Product> allProducts() {
+        return repository.allProducts();
     }
+
 }

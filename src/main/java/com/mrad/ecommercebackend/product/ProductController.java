@@ -9,13 +9,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
-public class ProductController {
-
+class ProductController {
     @Autowired
-    private ProductService service;
-
+    private  ProductService service;
     @GetMapping("/all")
-    public List<Product> getAllProducts(){
-        return service.getAllProducts();
+    public List<Product> allProducts() {
+            return service.allProducts();
     }
 }
