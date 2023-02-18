@@ -13,6 +13,4 @@ public class Inventory {
     @JsonIgnore
     private Product product;
     private Integer quantity;
-
-
 }

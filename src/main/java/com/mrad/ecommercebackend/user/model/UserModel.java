@@ -79,6 +79,11 @@ public class UserModel {
         this.emailVerified = emailVerified;
     }
 
+    public UserModel(Long id, String firstName, String lastName) {
+        this.first_name = firstName;
+        this.last_name = lastName;
+    }
+
     public boolean isEmailVerified() {
         return emailVerified;
     }

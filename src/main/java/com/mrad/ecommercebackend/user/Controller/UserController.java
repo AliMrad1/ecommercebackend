@@ -2,6 +2,7 @@ package com.mrad.ecommercebackend.user.Controller;
 
 import com.mrad.ecommercebackend.address.Address;
 import com.mrad.ecommercebackend.address.AddressService;
+import com.mrad.ecommercebackend.interfaces.CheckPermission;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class UserController {
             @AuthenticationPrincipal UserModel userAuthenticated,
             @PathVariable(required = true, name = "userId") Long id){
 
-        if (!userHasPermission(userAuthenticated, id)) {
+        if (!CheckPermission.userHasPermission(userAuthenticated, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(addressService.getAllAddressesForSpecificUser(userAuthenticated));
@@ -35,8 +36,7 @@ public class UserController {
     public ResponseEntity<Address> putAddress(
             @AuthenticationPrincipal UserModel user, @PathVariable("userId") Long userId,
             @RequestBody Address address) {
-        if (!userHasPermission(user, userId)) {
-            System.out.println("Wsht");
+        if (!CheckPermission.userHasPermission(user, userId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         UserModel refUser = new UserModel();
@@ -50,7 +50,7 @@ public class UserController {
     public ResponseEntity<String> patchAddress(
             @AuthenticationPrincipal UserModel user, @PathVariable("userId") Long userId,
             @PathVariable("addressId") Long addressId, @RequestBody Address address) {
-        if (!userHasPermission(user, userId)) {
+        if (!CheckPermission.userHasPermission(user, userId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (Objects.equals(address.getId(), addressId)) {
@@ -65,9 +65,5 @@ public class UserController {
             }
         }
         return ResponseEntity.badRequest().build();
-    }
-
-    private boolean userHasPermission(UserModel user, Long id) {
-        return Objects.equals(user.getId(), id);
     }
 }

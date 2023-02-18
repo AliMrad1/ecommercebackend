@@ -42,7 +42,6 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             var token = tokenHeader.substring(7);
             try {
                 var username = service.getUsername(token);
-                System.out.println(username);
                 Optional<UserModel> userExist = repository.findByUsername(username);
                 if (userExist.isPresent()) {
                     var user = userExist.get();
