@@ -80,8 +80,13 @@ public class UserModel {
     }
 
     public UserModel(Long id, String firstName, String lastName) {
+        this.id = id;
         this.first_name = firstName;
         this.last_name = lastName;
+    }
+
+    public UserModel(Long userId) {
+        this.id = userId;
     }
 
     public boolean isEmailVerified() {

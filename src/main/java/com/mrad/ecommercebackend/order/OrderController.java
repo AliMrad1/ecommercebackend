@@ -3,6 +3,7 @@ package com.mrad.ecommercebackend.order;
 import com.mrad.ecommercebackend.interfaces.CheckPermission;
 import com.mrad.ecommercebackend.order.model.Order;
 import com.mrad.ecommercebackend.order.model.OrderBody;
+import com.mrad.ecommercebackend.order.model.OrderQuantitiesRequestBody;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 public class OrderController {
     @Autowired
     private OrderService service;
-    @GetMapping("/{id}")
+    @GetMapping("/{user_id}")
     public ResponseEntity<List<Order>> getOrdersByUser(
             @AuthenticationPrincipal UserModel user,
-            @PathVariable("id") Long id)
+            @PathVariable("user_id") Long user_id)
     {
-        if (!CheckPermission.userHasPermission(user, id)) {
+        if (!CheckPermission.userHasPermission(user, user_id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(service.getAllOrdersByUser(user));
@@ -37,5 +38,17 @@ public class OrderController {
         }
 
         return ResponseEntity.badRequest().build();
+    }
+    @PostMapping("/oq/new")
+    public ResponseEntity<String> addOrderQuantities(
+            @RequestBody OrderQuantitiesRequestBody orderQuantitiesRequestBody,
+            @AuthenticationPrincipal UserModel user)
+    {
+            boolean isPermitted = service.insertOrderQuantities(user, orderQuantitiesRequestBody);
+            if(isPermitted){
+                return ResponseEntity.ok("Order Quantity Added!");
+            }
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

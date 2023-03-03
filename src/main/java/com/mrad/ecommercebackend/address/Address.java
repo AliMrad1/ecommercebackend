@@ -30,9 +30,14 @@ public class Address {
     }
 
     public Address(Long id,String addressLine1, String addressLine2, String city, String country) {
+        this.id = id;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.city = city;
         this.country = country;
+    }
+
+    public Address(Long addressId) {
+        this.id = addressId;
     }
 }

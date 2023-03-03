@@ -19,7 +19,7 @@ public class SecurityConfig {
        http.csrf().disable().cors().disable();
        http.addFilterBefore(jwtRequestFilter, AuthorizationFilter.class);
        http.authorizeHttpRequests()
-               .requestMatchers("/product/all", "/auth/register","/auth/login","/auth/confirm").permitAll()
+               .requestMatchers("/product/all", "/auth/register","/auth/login","/auth/confirm","/inventory/*").permitAll()
                .anyRequest().authenticated();
 
        return http.build();
