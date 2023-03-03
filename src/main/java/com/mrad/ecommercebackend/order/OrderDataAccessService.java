@@ -3,7 +3,6 @@ package com.mrad.ecommercebackend.order;
 import com.mrad.ecommercebackend.address.Address;
 import com.mrad.ecommercebackend.interfaces.MapExtractData;
 import com.mrad.ecommercebackend.order.model.Order;
-import com.mrad.ecommercebackend.order.model.OrderQuantities;
 import com.mrad.ecommercebackend.user.model.UserModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class OrderDataAccessService implements OrderRepository, MapExtractData<Order> {
@@ -33,6 +33,17 @@ public class OrderDataAccessService implements OrderRepository, MapExtractData<O
     }
 
     @Override
+    public Optional<Order> getOneSingleOrderForASpecificUserId(Long order_id) {
+        var sql = """
+                SELECT *
+                from order_p
+                where id = ?
+                LIMIT 1;
+                """;
+        return jdbcTemplate.query(sql, new OrderRowMapper(), order_id).stream().findFirst();
+    }
+
+    @Override
     public void insertOrder(Long address_id, Long user_id) {
         var sql = """
                 CALL public.insert_order(
@@ -42,16 +53,6 @@ public class OrderDataAccessService implements OrderRepository, MapExtractData<O
                 """;
 
         jdbcTemplate.update(sql, address_id.intValue(), user_id.intValue());
-    }
-
-    @Override
-    public List<OrderQuantities> findOrderQuantitiesByProductId() {
-        return null;
-    }
-
-    @Override
-    public void insertOrderQuantities(Integer quantity, Integer order_id, Integer product_id) {
-
     }
 
     @Override
